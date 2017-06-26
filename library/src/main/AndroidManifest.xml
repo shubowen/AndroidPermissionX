@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.xiaosu.lib.permission">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <activity
+            android:name="com.xiaosu.lib.permission.RequestActivity"
+            android:theme="@style/MyStyle"/>
+    </application>
+
+</manifest>
