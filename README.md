@@ -1,6 +1,8 @@
 # AndroidPermissionX
 Android动态权限处理库
 
+[![](https://www.jitpack.io/v/shubowen/AndroidPermissionX.svg)](https://www.jitpack.io/#shubowen/AndroidPermissionX)
+
 特别感谢[https://github.com/fccaikai/AndroidPermissionX](https://github.com/fccaikai/AndroidPermissionX "AndroidPermissionX")，原谅我借鉴了你的名字
 
 ## 为什么有那么多动态权限处理库，我还要造这个轮子 ##
@@ -13,6 +15,22 @@ Android动态权限处理库
 3. 代码追求极简风格，尽量减少使用者编写额外代码，简洁、易用、易懂
 
 ## 使用 ##
+
+首先在项目根目录添加：
+	
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://www.jitpack.io' }
+		}
+	}
+
+再添加依赖
+
+	dependencies {
+	        compile 'com.github.shubowen:AndroidPermissionX:版本号'
+	}
+
 1、使用类回调方式：
 
 	PermissionCompat.create(context)
