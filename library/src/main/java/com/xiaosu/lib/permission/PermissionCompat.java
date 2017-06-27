@@ -88,6 +88,9 @@ public class PermissionCompat {
         } else if (null != PermissionCompat.sTarget) {
             Method[] methods = PermissionCompat.sTarget.getClass().getDeclaredMethods();
             for (Method m : methods) {
+
+                if (m.getModifiers() != Method.PUBLIC) continue;
+
                 OnGrant onGrant = m.getAnnotation(OnGrant.class);
                 // TODO: 2017/6/26 检验方法参数
                 if (null != onGrant && onGrant.value() == PermissionCompat.sId) {
@@ -109,6 +112,8 @@ public class PermissionCompat {
         } else if (null != PermissionCompat.sTarget) {
             Method[] methods = PermissionCompat.sTarget.getClass().getDeclaredMethods();
             for (Method m : methods) {
+                if (m.getModifiers() != Method.PUBLIC) continue;
+
                 OnDeny onDeny = m.getAnnotation(OnDeny.class);
                 // TODO: 2017/6/26 检验方法参数
                 if (null != onDeny && onDeny.value() == PermissionCompat.sId) {
