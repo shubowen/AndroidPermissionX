@@ -1,6 +1,8 @@
 # AndroidPermissionX
 Android动态权限处理库
 
+特别感谢[https://github.com/fccaikai/AndroidPermissionX](https://github.com/fccaikai/AndroidPermissionX "AndroidPermissionX")，原谅我借鉴了你的名字
+
 ## 为什么有那么多动态权限处理库，我还要造这个轮子 ##
 1. 解决多权限申请时，部分机型存在多次回调问题
 2. 解决多权限申请时，用户拒绝其中某个权限，再次申请时，不能对于该权限进行精确解释的问题
