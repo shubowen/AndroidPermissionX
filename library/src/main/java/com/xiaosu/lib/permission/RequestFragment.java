@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.TextUtils;
+import android.util.SparseBooleanArray;
 
 
 /**
@@ -29,6 +30,8 @@ public class RequestFragment extends Fragment {
     private String[] mPermissions;
     private boolean isNewActivity;
     private boolean mRetry;
+
+    private SparseBooleanArray retryArr = new SparseBooleanArray();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -75,8 +78,11 @@ public class RequestFragment extends Fragment {
         boolean shouldExplain = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), mPermissions[index]);
 
         if (shouldExplain) {
-            if (mRetry && null != mExplain && !TextUtils.isEmpty(mExplain[index])) {
+            if (mRetry &&
+                    null != mExplain && !TextUtils.isEmpty(mExplain[index]) &&
+                    retryArr.get(index, true)) {
                 explain(mExplain[index], mPermissions[index], index);
+                retryArr.put(index, false);
             } else {
                 onRealDeny(mPermissions[index], true);
             }
@@ -161,6 +167,7 @@ public class RequestFragment extends Fragment {
     }
 
     private void finish() {
+        retryArr.clear();
         if (isNewActivity) getActivity().finish();
     }
 
