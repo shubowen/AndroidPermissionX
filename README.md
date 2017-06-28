@@ -82,7 +82,7 @@ Android动态权限处理库
 ## 注意 ##
 *1、使用注解回调时，OnDeny注解的函数必须是public，参数是(String permission, boolean retry),retry为false表示用户点击了不再询问禁止了授权；OnGrant注解的函数必须是public，没有参数*
 
-*2、retry需要配合explain函数，用户拒绝授权后，如果配置了retry(true)就会向用户展示配置的explain，直到用户点击不再询问禁止授权，默认retry是false*
+*2、retry需要配合explain函数，用户拒绝授权后，如果配置了retry(true)就会向用户展示配置的explain，并在此申请授权，默认retry是false*
 
 详细使用方式，请clone代码查看
 
