@@ -14,5 +14,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
 public @interface OnGrant {
-    int value();
+    int[] value();
 }

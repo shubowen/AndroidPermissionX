@@ -38,6 +38,7 @@ Android动态权限处理库
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.RECORD_AUDIO)
                 .explain("相机解释", "存储解释","录音解释")
+				.retry(true)
                 .callBack(new OnRequestPermissionsCallBack() {
                     @Override
                     public void onGrant() {
@@ -58,6 +59,7 @@ Android动态权限处理库
                 .permissions(Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.RECORD_AUDIO)
+				.retry(true)
                 .explain("相机解释", "存储解释","录音解释")
                 .compactCallBack(回调的对象, 请求的id)
                 .build()
@@ -65,17 +67,22 @@ Android动态权限处理库
 
 在回调的对象的类中写一个权限授权成功的方法(----方法上添加注解@OnGrant(请求的id)----)：
 
-	@OnGrant(请求的id)
-    public void startCamera() {
+	@OnGrant(请求的id...)
+    public void onGrant() {
         // todo 权限授权成功回调
     }
 
 在回调的对象的类中写一个权限授权失败的方法(----方法上添加注解@OnDeny(请求的id)----)：
 
-	@OnDeny(请求的id)
-    public void onDenied(String permission) {
+	@OnDeny(请求的id...)
+    public void onDeny(String permission, boolean retry) {
         // todo 权限授权失败回调
     }
+
+## 注意 ##
+*1、使用注解回调时，OnDeny注解的函数必须是public，参数是(String permission, boolean retry),retry为false表示用户点击了不再询问禁止了授权；OnGrant注解的函数必须是public，没有参数*
+
+*2、retry需要配合explain函数，用户拒绝授权后，如果配置了retry(true)就会向用户展示配置的explain，直到用户点击不再询问禁止授权，默认retry是false*
 
 详细使用方式，请clone代码查看
 

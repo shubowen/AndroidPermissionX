@@ -8,10 +8,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.SparseArray;
 
-import com.xiaosu.lib.permission.annotation.OnGrant;
 import com.xiaosu.lib.permission.annotation.OnDeny;
+import com.xiaosu.lib.permission.annotation.OnGrant;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 
 public class PermissionCompat {
@@ -69,15 +70,16 @@ public class PermissionCompat {
             Fragment fragment = manager.findFragmentByTag(Constants.TAG);
             if (null != fragment && fragment instanceof RequestFragment) {
                 RequestFragment f = (RequestFragment) fragment;
-                f.request(mBuilder.mPermissions, explains);
+                f.request(mBuilder.mPermissions, explains, mBuilder.retry);
             } else {
                 manager.beginTransaction()
-                        .add(RequestFragment.newInstance(mBuilder.mPermissions, explains, false), Constants.TAG)
+                        .add(RequestFragment.newInstance(mBuilder.mPermissions, explains, mBuilder.retry, false),
+                                Constants.TAG)
                         .commitAllowingStateLoss();
             }
             manager.executePendingTransactions();
         } else {
-            RequestActivity.go(mBuilder.mContext, mBuilder.mPermissions, explains);
+            RequestActivity.go(mBuilder.mContext, mBuilder.mPermissions, mBuilder.retry, explains);
         }
     }
 
@@ -89,44 +91,57 @@ public class PermissionCompat {
             Method[] methods = PermissionCompat.sTarget.getClass().getDeclaredMethods();
             for (Method m : methods) {
 
-                if (m.getModifiers() != Method.PUBLIC) continue;
+                if (!Modifier.isPublic(m.getModifiers())) continue;
 
                 OnGrant onGrant = m.getAnnotation(OnGrant.class);
                 // TODO: 2017/6/26 检验方法参数
-                if (null != onGrant && onGrant.value() == PermissionCompat.sId) {
-                    try {
-                        m.invoke(PermissionCompat.sTarget);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (null != onGrant) {
+                    int[] values = onGrant.value();
+                    if (hasValue(values, PermissionCompat.sId)) {
+                        try {
+                            m.invoke(PermissionCompat.sTarget);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
         releaseReference();
     }
 
-    static void notifyOnDenyCallback(String permission) {
+    static void notifyOnDenyCallback(String permission, boolean retry) {
         if (null != PermissionCompat.sCallBack) {
-            PermissionCompat.sCallBack.onDenied(permission);
+            PermissionCompat.sCallBack.onDenied(permission, retry);
         } else if (null != PermissionCompat.sTarget) {
             Method[] methods = PermissionCompat.sTarget.getClass().getDeclaredMethods();
             for (Method m : methods) {
-                if (m.getModifiers() != Method.PUBLIC) continue;
+
+                if (!Modifier.isPublic(m.getModifiers())) continue;
 
                 OnDeny onDeny = m.getAnnotation(OnDeny.class);
-                // TODO: 2017/6/26 检验方法参数
-                if (null != onDeny && onDeny.value() == PermissionCompat.sId) {
-                    try {
-                        m.invoke(PermissionCompat.sTarget, permission);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (null != onDeny) {
+                    int[] values = onDeny.value();
+                    if (hasValue(values, PermissionCompat.sId)) {
+                        try {
+                            m.invoke(PermissionCompat.sTarget, permission, retry);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
         releaseReference();
+    }
+
+    private static boolean hasValue(int[] values, int value) {
+        for (int v : values) {
+            if (v == value) return true;
+        }
+        return false;
     }
 
     private static void releaseReference() {
@@ -145,6 +160,7 @@ public class PermissionCompat {
 
         private SparseArray<String> sia = new SparseArray<>();
         private String[] mPermissions;
+        private boolean retry;
 
         Builder(Context context) {
             this.mContext = context;
@@ -178,6 +194,11 @@ public class PermissionCompat {
          */
         public Builder permissions(String... permissions) {
             this.mPermissions = permissions;
+            return this;
+        }
+
+        public Builder retry(boolean retry) {
+            this.retry = retry;
             return this;
         }
 

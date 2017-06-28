@@ -28,6 +28,7 @@ public class RequestFragment extends Fragment {
 
     private String[] mPermissions;
     private boolean isNewActivity;
+    private boolean mRetry;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -44,13 +45,14 @@ public class RequestFragment extends Fragment {
         if (checkPermission(mPermissions[requestCode])) {
             checkPermission();
         } else {
-            onDenied(mPermissions[requestCode]);
+            onDeny(requestCode);
         }
     }
 
     private void initData() {
         Bundle extras = getArguments();
         mExplain = extras.getStringArray(Constants.EXPLAIN_KEY);
+        mRetry = extras.getBoolean(Constants.RETRY_KEY);
         isNewActivity = extras.getBoolean(Constants.NEW_ACTIVITY, true);
         mPermissions = extras.getStringArray(Constants.PERMISSIONS_KEY);
     }
@@ -69,8 +71,27 @@ public class RequestFragment extends Fragment {
         }
     }
 
-    private void onDenied(String permission) {
-        PermissionCompat.notifyOnDenyCallback(permission);
+    private void onDeny(int index) {
+        boolean shouldExplain = ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), mPermissions[index]);
+
+        if (shouldExplain) {
+            if (mRetry && null != mExplain && !TextUtils.isEmpty(mExplain[index])) {
+                explain(mExplain[index], mPermissions[index], index);
+            } else {
+                onRealDeny(mPermissions[index], true);
+            }
+        } else {
+            onRealDeny(mPermissions[index], false);
+        }
+    }
+
+    /**
+     * @param permission      拒绝的权限
+     * @param canRequestAgain 是否能再次申请
+     */
+    private void onRealDeny(String permission, boolean canRequestAgain) {
+        //用户点击不再询问，禁止权限
+        PermissionCompat.notifyOnDenyCallback(permission, canRequestAgain);
         finish();
     }
 
@@ -98,11 +119,15 @@ public class RequestFragment extends Fragment {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static RequestFragment newInstance(String[] permissions, String[] explains, boolean newActivity) {
+    public static RequestFragment newInstance(String[] permissions,
+                                              String[] explains,
+                                              boolean retry,
+                                              boolean newActivity) {
 
         Bundle args = new Bundle();
         args.putStringArray(Constants.PERMISSIONS_KEY, permissions);
         args.putStringArray(Constants.EXPLAIN_KEY, explains);
+        args.putBoolean(Constants.RETRY_KEY, retry);
         args.putBoolean(Constants.NEW_ACTIVITY, newActivity);
 
         RequestFragment fragment = new RequestFragment();
@@ -128,7 +153,7 @@ public class RequestFragment extends Fragment {
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
+                        onRealDeny(permission, true);
                     }
                 })
                 .show()
@@ -139,9 +164,10 @@ public class RequestFragment extends Fragment {
         if (isNewActivity) getActivity().finish();
     }
 
-    public void request(String[] permissions, String[] explains) {
+    public void request(String[] permissions, String[] explains, boolean retry) {
         mPermissions = permissions;
         mExplain = explains;
+        mRetry = retry;
 
         checkPermission();
     }

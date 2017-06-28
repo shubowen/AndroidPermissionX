@@ -10,12 +10,13 @@ import android.support.annotation.Nullable;
 
 public class RequestActivity extends Activity {
 
-    public static void go(Context context, String[] permissions,
+    public static void go(Context context, String[] permissions, boolean retry,
                           String[] explains) {
         Intent intent = new Intent(context, RequestActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle args = new Bundle();
         args.putStringArray(Constants.PERMISSIONS_KEY, permissions);
+        args.putBoolean(Constants.RETRY_KEY, retry);
         args.putStringArray(Constants.EXPLAIN_KEY, explains);
         args.putBoolean(Constants.NEW_ACTIVITY, true);
         intent.putExtras(args);

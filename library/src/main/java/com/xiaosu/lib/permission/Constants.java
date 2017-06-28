@@ -9,5 +9,7 @@ public interface Constants {
 
     String EXPLAIN_KEY = "explain";
 
+    String RETRY_KEY = "retry";
+
     String NEW_ACTIVITY = "new_activity";
 }
