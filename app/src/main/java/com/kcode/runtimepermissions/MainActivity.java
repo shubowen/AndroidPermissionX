@@ -33,17 +33,6 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.RECORD_AUDIO)
                 .explain("相机描述", "存储描述")
                 .retry(true)
-//                .callBack(new OnRequestPermissionsCallBack() {
-//                    @Override
-//                    public void onGrant() {
-//                        startCamera();
-//                    }
-//
-//                    @Override
-//                    public void onDenied(String permission, boolean retry) {
-//                        MainActivity.this.onDenied(permission, retry);
-//                    }
-//                })
                 .compactCallBack(this, 100)
                 .build()
                 .request();

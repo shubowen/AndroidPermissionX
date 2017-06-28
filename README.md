@@ -33,12 +33,12 @@ Android动态权限处理库
 
 1、使用类回调方式：
 
-	PermissionCompat.create(context)
+        PermissionCompat.create(this)
                 .permissions(Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.RECORD_AUDIO)
                 .explain("相机解释", "存储解释","录音解释")
-				.retry(true)
+                .retry(true)
                 .callBack(new OnRequestPermissionsCallBack() {
                     @Override
                     public void onGrant() {
@@ -46,7 +46,7 @@ Android动态权限处理库
                     }
 
                     @Override
-                    public void onDenied(String permission) {
+                    public void onDenied(String permission, boolean retry) {
                         // todo 权限授权失败回调
                     }
                 })
@@ -55,12 +55,12 @@ Android动态权限处理库
 
 2、使用注解回调方式：
 
-	        PermissionCompat.create(context)
+        PermissionCompat.create(this)
                 .permissions(Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.RECORD_AUDIO)
-				.retry(true)
                 .explain("相机解释", "存储解释","录音解释")
+                .retry(true)
                 .compactCallBack(回调的对象, 请求的id)
                 .build()
                 .request();
