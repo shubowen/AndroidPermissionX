@@ -82,7 +82,6 @@ public class RequestFragment extends Fragment {
                     null != mExplain && !TextUtils.isEmpty(mExplain[index]) &&
                     retryArr.get(index, true)) {
                 explain(mExplain[index], mPermissions[index], index);
-                retryArr.put(index, false);
             } else {
                 onRealDeny(mPermissions[index], true);
             }
@@ -148,6 +147,7 @@ public class RequestFragment extends Fragment {
     }
 
     private void explain(String explain, final String permission, final int index) {
+        retryArr.put(index, false);
         new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.DialogStyle))
                 .setMessage(explain)
                 .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
