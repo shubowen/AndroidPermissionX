@@ -16,7 +16,7 @@ Android动态权限处理库
 
 ## 使用 ##
 
-首先在项目根目录添加：
+首先在项目的根build.gradle添加：
 	
 	allprojects {
 		repositories {
