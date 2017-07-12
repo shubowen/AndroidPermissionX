@@ -1,8 +1,6 @@
 # AndroidPermissionX
 Android动态权限处理库
 
-[![](https://www.jitpack.io/v/shubowen/AndroidPermissionX.svg)](https://www.jitpack.io/#shubowen/AndroidPermissionX)
-
 特别感谢[https://github.com/fccaikai/AndroidPermissionX](https://github.com/fccaikai/AndroidPermissionX "AndroidPermissionX")，原谅我借鉴了你的名字
 
 ## 为什么有那么多动态权限处理库，我还要造这个轮子 ##
@@ -16,19 +14,10 @@ Android动态权限处理库
 
 ## 使用 ##
 
-首先在项目的根build.gradle添加：
-	
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://www.jitpack.io' }
-		}
-	}
-
-再添加依赖
+首先在项目中添加依赖
 
 	dependencies {
-	        compile 'com.github.shubowen:AndroidPermissionX:版本号'
+	        compile 'com.xiaosu:permission:1.0.0'
 	}
 
 1、使用类回调方式：
