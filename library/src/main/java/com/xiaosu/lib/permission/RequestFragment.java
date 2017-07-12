@@ -95,7 +95,6 @@ public class RequestFragment extends Fragment {
      * @param canRequestAgain 是否能再次申请
      */
     private void onRealDeny(String permission, boolean canRequestAgain) {
-        //用户点击不再询问，禁止权限
         PermissionCompat.notifyOnDenyCallback(permission, canRequestAgain);
         finish();
     }
